@@ -1,0 +1,81 @@
+
+#include <stdio.h>
+#include <math.h>
+
+#define N 6
+#define F 2
+
+int data[N][F] = {
+    {1, 1},
+    {1, 0},
+    {0, 1},
+    {0, 0},
+    {1, 1},
+    {0, 0}
+};
+
+int cls[N] = {1, 1, 0, 0, 1, 0};
+
+void id3() {
+    int i, correct = 0;
+
+    printf("\nID3 Decision Rules:\n");
+    printf("IF feature1 = 1 THEN class = 1\n");
+    printf("IF feature1 = 0 THEN class = 0\n");
+
+    for (i = 0; i < N; i++) {
+        int pred = data[i][0];
+        if (pred == cls[i])
+            correct++;
+    }
+
+    printf("ID3 Accuracy: %.2f%%\n",
+           100.0 * correct / N);
+}
+
+void knn() {
+    int i, j, d, best, pred, correct = 0;
+    double minDist;
+
+    printf("\nk-NN Classification (k=1):\n");
+
+    for (i = 0; i < N; i++) {
+        minDist = 1e9;
+        pred = -1;
+
+        for (j = 0; j < N; j++) {
+            if (i == j)
+                continue;
+
+            d = (data[i][0] != data[j][0]) +
+                (data[i][1] != data[j][1]);
+
+            if (d < minDist) {
+                minDist = d;
+                pred = cls[j];
+            }
+        }
+
+        if (pred == cls[i])
+            correct++;
+
+        printf("Instance %d: Actual=%d Predicted=%d\n",
+               i + 1, cls[i], pred);
+    }
+
+    printf("k-NN Accuracy: %.2f%%\n",
+           100.0 * correct / N);
+}
+
+int main() {
+    printf("Classification Experiment\n");
+    printf("=========================\n");
+
+    id3();
+    knn();
+
+    printf("\nNaive Bayes and J48 can be evaluated ");
+    printf("using WEKA Explorer.\n");
+
+    return 0;
+}
